@@ -25,6 +25,7 @@ abstract class NfAbstract implements InputTransformer
 
     public function makeHeader(BaseInformation $information, $extraInformations)
     {
+
         $header = [
             '_attributes' => [
                 HeaderEnum::VERSION => 1
@@ -140,8 +141,10 @@ abstract class NfAbstract implements InputTransformer
                 if (isset($extraInformations[$field]))
                     $rps[$field] = $extraInformations[$field];
             }
-            // Taker
-            $rps[RpsEnum::CPFCNPJ_TAKER] = $this->makeCPFCNPJTaker($extraInformations);
+            
+            $taker = $this->makeCPFCNPJTaker($extraInformations);
+            if($taker != null)  
+                $rps[RpsEnum::CPFCNPJ_TAKER] = $taker; 
 
             foreach (RpsEnum::takerInformations() as $field) {
                 if (isset($extraInformations[$field]))
@@ -168,17 +171,10 @@ abstract class NfAbstract implements InputTransformer
             if (isset($extraInformations[RpsEnum::ENCAPSULATION_NUMBER]) && !empty($extraInformations[RpsEnum::ENCAPSULATION_NUMBER]))
                 $rps[RpsEnum::ENCAPSULATION_NUMBER] = $extraInformations[RpsEnum::ENCAPSULATION_NUMBER];
 
-            if (isset($extraInformations[RpsEnum::TAX_VALUE_INTERMEDIARY]) && !empty($extraInformations[RpsEnum::TAX_VALUE_INTERMEDIARY]) )
-                $rps[RpsEnum::TAX_VALUE_INTERMEDIARY] = $extraInformations[RpsEnum::TAX_VALUE_INTERMEDIARY];
-
-            if (isset($extraInformations[RpsEnum::TAX_PERCENT_INTERMEDIARY]) && !empty($extraInformations[RpsEnum::TAX_PERCENT_INTERMEDIARY]) )
-                $rps[RpsEnum::TAX_PERCENT_INTERMEDIARY] = $extraInformations[RpsEnum::TAX_PERCENT_INTERMEDIARY];
-
-            if (isset($extraInformations[RpsEnum::TAX_ORIGIN]) && !empty($extraInformations[RpsEnum::TAX_ORIGIN]) )
-                $rps[RpsEnum::TAX_ORIGIN] = $extraInformations[RpsEnum::TAX_ORIGIN];
 
             $rpsItens[] = $rps;
         }
+
         return [
             RpsEnum::RPS => $rpsItens,
         ];
@@ -192,7 +188,7 @@ abstract class NfAbstract implements InputTransformer
         if (isset($extraInformations[SimpleFieldsEnum::CNPJ]))
             return [SimpleFieldsEnum::CNPJ => $extraInformations[SimpleFieldsEnum::CNPJ]];
 
-        return [SimpleFieldsEnum::CNPJ => null];
+        return null;
     }
 
     private function makeAddress($extraInformations)
