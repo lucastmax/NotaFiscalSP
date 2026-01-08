@@ -19,17 +19,26 @@ class ApiClient
             'local_cert' => $baseInformation->getCertificatePath(),
             'passphrase' => $baseInformation->getCertificatePass(),
             'cache_wsdl' => WSDL_CACHE_NONE,
+            'stream_context' => stream_context_create([
+                'ssl' => [
+                    'verify_peer'      => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed'=> true,
+                ]
+            ])
+        ];
+        
+        $arguments = [
+                $method => [
+                    'VersaoSchema' => $baseInformation->getLayoutVersion(),
+                    'MensagemXML' => $baseInformation->getXml()
+                ],
         ];
 
         try {
-            $client = new SoapClient($wsdlBase->getWsdl(), $options);
+            
 
-            $arguments = [
-                $method => [
-                    'VersaoSchema' => 1,
-                    'MensagemXML' => $baseInformation->getXml()
-                ],
-            ];
+            $client = new SoapClient($wsdlBase->getWsdl(), $options);
 
             $options = [];
             $result = $client->__soapCall($method, $arguments, $options);

@@ -10,6 +10,9 @@ class Params
     // CPF - Identificação pessoa física
     const CPF = 'cpf';
 
+    // Layout do XML (1 = atual, 2 = Reforma Tributária)
+    const LAYOUT_VERSION = 'layoutVersion';
+
     // Inscrição Municipal do Prestador utilizada na RPS
     const IM = 'im';
 

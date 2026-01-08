@@ -16,6 +16,12 @@ class BaseEntitiesBuilder
         $baseInformation->setCertificate($params);
         $baseInformation->setCertificatePass(General::getPath($params, Params::CERTIFICATE_PASS));
         $baseInformation->setIm(General::getPath($params, Params::IM));
+
+        // Layout (1 = atual, 2 = Reforma Tributária)
+        if (isset($params[Params::LAYOUT_VERSION])) {
+            $baseInformation->setLayoutVersion((int)$params[Params::LAYOUT_VERSION]);
+        }
+
         return $baseInformation;
     }
 }

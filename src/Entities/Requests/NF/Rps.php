@@ -50,6 +50,28 @@ class Rps implements UserRequest
     private $municipioPrestacao;
     private $valortotalRecebido;
     private $numeroEncapsulamento;
+
+
+    // --- Layout 2 (Reforma Tributária 2026)
+    private $valorInicialCobrado;
+    private $valorFinalCobrado;
+    private $valorMulta;
+    private $valorJuros;
+    private $valorIPI;
+    private $valorDeducaoCIBS;
+    private $exigibilidadeSuspensa;
+    private $onerosidade;
+    private $pagamentoParceladoAntecipado;
+    private $ncm;
+    private $nbs;
+    private $cLocPrestacao;
+
+    // Grupos (Layout 2)
+    private $gpPrestacao = []; // ex.: ['cLocPrestacao' => '...', 'cPaisPrestacao' => '...']
+    private $trib = [];        // ex.: ['gIBSCBS' => [...]]
+    private $ibscbs = [];      // estrutura livre conforme XSD (tpIBSCBS)
+    private $atvEvento = [];   // estrutura livre conforme XSD
+
     private $tipoLogradouro;
     private $logradouro;
     private $numeroEndereco;
@@ -130,6 +152,22 @@ class Rps implements UserRequest
             RpsEnum::CPFCNPJ_TAKER => $this->cpfCnpjTomador,
             RpsEnum::CORPORATE_NAME_TAKER => $this->razaoSocialTomador,
             RpsEnum::EMAIL_TAKER => $this->emailTomador,
+            // --- Layout 2 (Reforma Tributária 2026)
+            RpsEnum::INITIAL_CHARGED_VALUE => $this->valorInicialCobrado,
+            RpsEnum::FINAL_CHARGED_VALUE => $this->valorFinalCobrado,
+            RpsEnum::FINE_VALUE => $this->valorMulta,
+            RpsEnum::INTEREST_VALUE => $this->valorJuros,
+            RpsEnum::IPI_VALUE => $this->valorIPI,
+            RpsEnum::DEDUCTION_CIBS_VALUE => $this->valorDeducaoCIBS,
+            RpsEnum::EXIGIBILITY_SUSPENDED => $this->exigibilidadeSuspensa,
+            RpsEnum::ONEROSITY => $this->onerosidade,
+            RpsEnum::ADVANCE_INSTALLMENT_PAYMENT => $this->pagamentoParceladoAntecipado,
+            RpsEnum::NCM => $this->ncm,
+            RpsEnum::NBS => $this->nbs,
+            RpsEnum::ACTIVITY_EVENT => $this->atvEvento,
+            RpsEnum::PRESTATION_LOCATION_CODE => $this->cLocPrestacao,
+            RpsEnum::TRIBUTES_GROUP => $this->trib,
+            RpsEnum::IBS_CBS => $this->ibscbs,
             SimpleFieldsEnum::TYPE_ADDRESS => $this->tipoLogradouro,
             SimpleFieldsEnum::ADDRESS => $this->logradouro,
             SimpleFieldsEnum::ADDRESS_NUMBER => $this->numeroEndereco,
@@ -868,5 +906,209 @@ class Rps implements UserRequest
     public function setCep($cep)
     {
         $this->cep = sprintf('%08s', General::onlyNumbers($cep));
+    }
+
+    // -----------------------------
+    // Layout 2 - Campos adicionais
+    // -----------------------------
+
+    public function getValorInicialCobrado()
+    {
+        return $this->valorInicialCobrado;
+    }
+
+    public function setValorInicialCobrado($valorInicialCobrado)
+    {
+        $this->valorInicialCobrado = $valorInicialCobrado;
+        return $this;
+    }
+
+    public function getValorFinalCobrado()
+    {
+        return $this->valorFinalCobrado;
+    }
+
+    public function setValorFinalCobrado($valorFinalCobrado)
+    {
+        $this->valorFinalCobrado = $valorFinalCobrado;
+        return $this;
+    }
+
+    public function getValorMulta()
+    {
+        return $this->valorMulta;
+    }
+
+    public function setValorMulta($valorMulta)
+    {
+        $this->valorMulta = $valorMulta;
+        return $this;
+    }
+
+    public function getValorJuros()
+    {
+        return $this->valorJuros;
+    }
+
+    public function setValorJuros($valorJuros)
+    {
+        $this->valorJuros = $valorJuros;
+        return $this;
+    }
+
+    public function getValorIPI()
+    {
+        return $this->valorIPI;
+    }
+
+    public function setValorIPI($valorIPI)
+    {
+        $this->valorIPI = $valorIPI;
+        return $this;
+    }
+
+    public function getValorDeducaoCIBS()
+    {
+        return $this->valorDeducaoCIBS;
+    }
+
+    public function setValorDeducaoCIBS($valorDeducaoCIBS)
+    {
+        $this->valorDeducaoCIBS = $valorDeducaoCIBS;
+        return $this;
+    }
+
+    public function getExigibilidadeSuspensa()
+    {
+        return $this->exigibilidadeSuspensa;
+    }
+
+    public function setExigibilidadeSuspensa($exigibilidadeSuspensa)
+    {
+        $this->exigibilidadeSuspensa = $exigibilidadeSuspensa;
+        return $this;
+    }
+
+    public function getOnerosidade()
+    {
+        return $this->onerosidade;
+    }
+
+    public function setOnerosidade($onerosidade)
+    {
+        $this->onerosidade = $onerosidade;
+        return $this;
+    }
+
+    public function getPagamentoParceladoAntecipado()
+    {
+        return $this->pagamentoParceladoAntecipado;
+    }
+
+    public function setPagamentoParceladoAntecipado($pagamentoParceladoAntecipado)
+    {
+        $this->pagamentoParceladoAntecipado = $pagamentoParceladoAntecipado;
+        return $this;
+    }
+
+    public function getNcm()
+    {
+        return $this->ncm;
+    }
+
+    public function setNcm($ncm)
+    {
+        $this->ncm = $ncm;
+        return $this;
+    }
+
+    public function getNbs()
+    {
+        return $this->nbs;
+    }
+
+    public function setNbs($nbs)
+    {
+        $this->nbs = $nbs;
+        return $this;
+    }
+
+    // -----------------------------
+    // Layout 2 - Grupos / Nós complexos
+    // -----------------------------
+
+    /**
+     * Define o grupo gpPrestacao (ex.: ['cLocPrestacao' => '...', 'cPaisPrestacao' => '...']).
+     */
+    public function setGpPrestacao(array $gpPrestacao)
+    {
+        $this->gpPrestacao = $gpPrestacao;
+        return $this;
+    }
+
+    public function getGpPrestacao()
+    {
+        return $this->gpPrestacao;
+    }
+
+
+    /**
+     * Define o grupo trib (tpTrib), ex.: ['gIBSCBS' => [...]].
+     */
+    public function setTrib(array $trib)
+    {
+        $this->trib = $trib;
+        return $this;
+    }
+
+    public function getTrib()
+    {
+        return $this->trib;
+    }
+
+    /**
+     * Helper: define gIBSCBS dentro de trib.
+     */
+    public function setGIBSCBS(array $gIBSCBS)
+    {
+        $this->trib[RpsEnum::G_IBS_CBS] = $gIBSCBS;
+        return $this;
+    }
+
+    /**
+     * Define o nó IBSCBS (estrutura livre conforme XSD tpIBSCBS).
+     */
+    public function setIbscbs(array $ibscbs)
+    {
+        $this->ibscbs = $ibscbs;
+        return $this;
+    }
+
+    public function getIbscbs()
+    {
+        return $this->ibscbs;
+    }
+
+    /**
+     * Define o nó atvEvento (estrutura livre conforme XSD).
+     */
+    public function setAtvEvento(array $atvEvento)
+    {
+        $this->atvEvento = $atvEvento;
+        return $this;
+    }
+
+    public function getAtvEvento()
+    {
+        return $this->atvEvento;
+    }
+
+    public function setLocPrestacao($locPrestacao){
+        $this->cLocPrestacao = $locPrestacao;
+        return $this;
+    }
+
+    public function getLocPrestacao(){
+        return $this->cLocPrestacao;
     }
 }

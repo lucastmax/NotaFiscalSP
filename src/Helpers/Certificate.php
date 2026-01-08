@@ -72,24 +72,47 @@ class Certificate
         if(is_null($document)){
             $tipoDoc = 3;
         }
+    }
+    
+    /**
+     * Monta a string de assinatura do RPS conforme “Campos para assinatura do RPS – versão 2.0”.
+     * Diferenças principais:
+     * - IM do prestador com 12 posições (zero à esquerda).
+     * - Não existe <ValorServicos>; usar <ValorInicialCobrado> ou <ValorFinalCobrado>.
+     */
+    public static function rpsSignatureStringV2($params)
+    {
+        $document = General::getKey($params, SimpleFieldsEnum::CNPJ) ? General::getKey($params, SimpleFieldsEnum::CNPJ) : General::getKey($params, SimpleFieldsEnum::CPF);
+
+        $tipoDoc = ((General::getKey($params, SimpleFieldsEnum::CPF)) ? '1' : '2');
+        if (is_null($document)) {
+            $tipoDoc = 3;
+        }
+
+        $valorCobrado = null;
+        if (!empty($params[RpsEnum::INITIAL_CHARGED_VALUE])) {
+            $valorCobrado = General::getKey($params, RpsEnum::INITIAL_CHARGED_VALUE);
+        } elseif (!empty($params[RpsEnum::FINAL_CHARGED_VALUE])) {
+            $valorCobrado = General::getKey($params, RpsEnum::FINAL_CHARGED_VALUE);
+        }
 
         $string =
-            sprintf('%08s', General::getKey($params, SimpleFieldsEnum::IM_PROVIDER)) .
-            sprintf('%-5s', General::getKey($params, SimpleFieldsEnum::RPS_SERIES)) . // 5 chars
+            sprintf('%012s', General::getKey($params, SimpleFieldsEnum::IM_PROVIDER)) .
+            sprintf('%-5s', General::getKey($params, SimpleFieldsEnum::RPS_SERIES)) .
             sprintf('%012s', General::getKey($params, SimpleFieldsEnum::RPS_NUMBER)) .
             str_replace('-', '', General::getKey($params, RpsEnum::EMISSION_DATE)) .
             General::getKey($params, RpsEnum::RPS_TAX) .
             General::getKey($params, RpsEnum::RPS_STATUS) .
             ($params[RpsEnum::ISS_RETENTION] == 'false' ? BooleanFields::FALSE : BooleanFields::TRUE) .
-            sprintf('%015s', str_replace(array('.', ','), '', number_format(General::getKey($params, RpsEnum::SERVICE_VALUE), 2))) .
+            sprintf('%015s', str_replace(array('.', ','), '', number_format($valorCobrado, 2))) .
             sprintf('%015s', str_replace(array('.', ','), '', number_format(General::getKey($params, RpsEnum::DEDUCTION_VALUE), 2))) .
             sprintf('%05s', General::getKey($params, RpsEnum::SERVICE_CODE)) .
             $tipoDoc .
             sprintf('%014s', $document);
 
-        // AVAILABLE ON RELEASE 2
         return $string;
     }
+
 
     public static function cancelSignatureString($params)
     {

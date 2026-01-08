@@ -50,7 +50,27 @@ class RpsValidator
             }
 
             $item[ComplexFieldsEnum::RPS_KEY] = true;
-            $item[DetailEnum::SIGN] = Certificate::rpsSignatureString($item);
+
+            // Layout 2 (Reforma Tributária): ajustar campos e assinatura
+            if (method_exists($baseInformation, 'getLayoutVersion') && $baseInformation->getLayoutVersion() === 2) {
+                // No layout 2 não existe ValorServicos; usar ValorInicialCobrado/ValorFinalCobrado
+                if (!empty($item[RpsEnum::SERVICE_VALUE])) {
+                    // mantém compatibilidade: se vier ValorServicos e não vierem os novos, usa como ValorFinalCobrado
+                    if (empty($item[RpsEnum::INITIAL_CHARGED_VALUE]) && empty($item[RpsEnum::FINAL_CHARGED_VALUE])) {
+                        $item[RpsEnum::FINAL_CHARGED_VALUE] = $item[RpsEnum::SERVICE_VALUE];
+                    }
+                    unset($item[RpsEnum::SERVICE_VALUE]);
+                }
+                if (empty($item[RpsEnum::INITIAL_CHARGED_VALUE]) && empty($item[RpsEnum::FINAL_CHARGED_VALUE])) {
+                    throw new InvalidParam('Para layout 2 informe ValorInicialCobrado ou ValorFinalCobrado');
+                }
+            }
+
+            if (method_exists($baseInformation, 'getLayoutVersion') && $baseInformation->getLayoutVersion() === 2 && method_exists(Certificate::class, 'rpsSignatureStringV2')) {
+                $item[DetailEnum::SIGN] = Certificate::rpsSignatureStringV2($item);
+            } else {
+                $item[DetailEnum::SIGN] = Certificate::rpsSignatureString($item);
+            }
             $rpsOK[] = $item;
         }
         return $rpsOK;

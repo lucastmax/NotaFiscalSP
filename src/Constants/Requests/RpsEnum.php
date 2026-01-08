@@ -38,6 +38,29 @@ class RpsEnum
     const TOTAL_VALUE = 'ValorTotalRecebido';
     const ENCAPSULATION_NUMBER = 'NumeroEncapsulamento';
 
+    // --- Layout 2 (Reforma Tributária 2026) - Campos adicionais do tpRPS
+    const INITIAL_CHARGED_VALUE = 'ValorInicialCobrado';
+    const FINAL_CHARGED_VALUE = 'ValorFinalCobrado';
+    const FINE_VALUE = 'ValorMulta';
+    const INTEREST_VALUE = 'ValorJuros';
+    const IPI_VALUE = 'ValorIPI';
+    const DEDUCTION_CIBS_VALUE = 'ValorDeducaoCIBS';
+    const EXIGIBILITY_SUSPENDED = 'ExigibilidadeSuspensa';
+    const ONEROSITY = 'Onerosidade';
+    const ADVANCE_INSTALLMENT_PAYMENT = 'PagamentoParceladoAntecipado';
+    const NCM = 'NCM';
+    const NBS = 'NBS';
+    const ACTIVITY_EVENT = 'atvEvento';
+    const IBS_CBS = 'IBSCBS';
+
+    // Grupo gpPrestacao (Layout 2)
+    const PRESTATION_LOCATION_CODE = 'cLocPrestacao';
+    const PRESTATION_COUNTRY_CODE = 'cPaisPrestacao';
+
+    // Grupo tpTrib / tpGIBSCBS (Layout 2)
+    const TRIBUTES_GROUP = 'trib';
+    const G_IBS_CBS = 'gIBSCBS';
+
     public static function simpleTypes()
     {
         return [
@@ -55,6 +78,33 @@ class RpsEnum
             RpsEnum::SERVICE_CODE,
             RpsEnum::SERVICE_TAX,
             RpsEnum::ISS_RETENTION,
+        ];
+    }
+
+    
+    public static function layout2SimpleTypes()
+    {
+        return [
+            RpsEnum::INITIAL_CHARGED_VALUE,
+            RpsEnum::FINAL_CHARGED_VALUE,
+            RpsEnum::FINE_VALUE,
+            RpsEnum::INTEREST_VALUE,
+            RpsEnum::IPI_VALUE,
+            RpsEnum::DEDUCTION_CIBS_VALUE,
+            RpsEnum::EXIGIBILITY_SUSPENDED,
+            RpsEnum::ONEROSITY,
+            RpsEnum::ADVANCE_INSTALLMENT_PAYMENT,
+            RpsEnum::NCM,
+            RpsEnum::NBS,
+        ];
+    }
+
+    public static function complexTypes()
+    {
+        return [
+            RpsEnum::ACTIVITY_EVENT,
+            RpsEnum::TRIBUTES_GROUP,
+            RpsEnum::IBS_CBS,
         ];
     }
 

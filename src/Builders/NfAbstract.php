@@ -27,7 +27,7 @@ abstract class NfAbstract implements InputTransformer
     {
         $header = [
             '_attributes' => [
-                HeaderEnum::VERSION => 1
+                HeaderEnum::VERSION => $information->getLayoutVersion()
             ],
         ];
 
@@ -140,6 +140,9 @@ abstract class NfAbstract implements InputTransformer
                 if (isset($extraInformations[$field]))
                     $rps[$field] = $extraInformations[$field];
             }
+
+            // Campos complexos / grupos (arrays) - Layout 2
+
             // Taker
             $taker = $this->makeCPFCNPJTaker($extraInformations);
             if($taker != null) {
@@ -181,8 +184,37 @@ abstract class NfAbstract implements InputTransformer
             if (isset($extraInformations[RpsEnum::TAX_ORIGIN]) && !empty($extraInformations[RpsEnum::TAX_ORIGIN]) )
                 $rps[RpsEnum::TAX_ORIGIN] = $extraInformations[RpsEnum::TAX_ORIGIN];
 
+            if (method_exists($information, 'getLayoutVersion') && $information->getLayoutVersion() === 1) {
+                // campos simples adicionados no layout 2, remover da versão 1
+                foreach (RpsEnum::layout2SimpleTypes() as $field) {
+                    unset($rps[$field]);
+                }
+                foreach (RpsEnum::complexTypes() as $group) {
+                    unset($rps[$group]);
+                }
+            }
+
+            if (method_exists($information, 'getLayoutVersion') && $information->getLayoutVersion() === 2) {
+                // campos simples adicionados no layout 2
+                foreach (RpsEnum::layout2SimpleTypes() as $field) {
+                    if (isset($extraInformations[$field]) && $extraInformations[$field] !== '' && $extraInformations[$field] !== null) {
+                        $rps[$field] = $extraInformations[$field];
+                    }
+                }
+
+                $rps[RpsEnum::PRESTATION_LOCATION_CODE] = $extraInformations[RpsEnum::PRESTATION_LOCATION_CODE];
+
+                // grupos (nós) do layout 2 (arrays/objetos)
+                foreach (RpsEnum::complexTypes() as $group) {
+                    if (isset($extraInformations[$group]) && !empty($extraInformations[$group])) {
+                        $rps[$group] = $extraInformations[$group];
+                    }
+                }
+            }
+
             $rpsItens[] = $rps;
-        }
+        }   
+
         return [
             RpsEnum::RPS => $rpsItens,
         ];

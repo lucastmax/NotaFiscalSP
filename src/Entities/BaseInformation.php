@@ -31,6 +31,12 @@ class BaseInformation
      *  Inscrição Municipal da Empresa é informada na Nota Fiscal Obrigatóriamente
      */
     private $im;
+
+    /**
+     * @var int
+     * Layout do XML (1 = atual, 2 = Reforma Tributária)
+     */
+    private $layoutVersion = 1;
     /**
      * @var
      *  Para Realizar o acesso a API e Assinar é obrigatório o Certifiado digital da empresa
@@ -209,4 +215,18 @@ class BaseInformation
             $this->im = General::onlyNumbers($im);
         }
     }
+
+    public function getLayoutVersion(): int
+    {
+        return (int)$this->layoutVersion;
+    }
+
+    public function setLayoutVersion(int $layoutVersion): void
+    {
+        if (!in_array($layoutVersion, [1, 2], true)) {
+            throw new \InvalidArgumentException('layoutVersion deve ser 1 ou 2');
+        }
+        $this->layoutVersion = $layoutVersion;
+    }
+
 }

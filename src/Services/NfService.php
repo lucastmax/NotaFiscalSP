@@ -63,6 +63,9 @@ class NfService
 
         //Set Input file and sign
         $information->setXml($file);
+        
+       // dd($file);
+       // die;
 
         // Send to API,
         $output = ApiClient::send($this->nfEndPoint, $method, $information);
