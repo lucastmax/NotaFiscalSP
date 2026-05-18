@@ -50,7 +50,7 @@ class Rps implements UserRequest
     private $municipioPrestacao;
     private $valortotalRecebido;
     private $numeroEncapsulamento;
-
+    private $retencaoPisCofins;
 
     // --- Layout 2 (Reforma Tributária 2026)
     private $valorInicialCobrado;
@@ -147,6 +147,7 @@ class Rps implements UserRequest
             RpsEnum::CITY_INSTALLMENT => $this->municipioPrestacao,
             RpsEnum::TOTAL_VALUE => $this->valortotalRecebido,
             RpsEnum::ENCAPSULATION_NUMBER => $this->numeroEncapsulamento,
+            RpsEnum::RETENCAO_PIS_COFINS => $this->retencaoPisCofins,
             RpsEnum::IM_TAKER => $this->inscricaoMunicipalTomador,
             RpsEnum::IE_TAKER => $this->inscricaoEstadualTomador,
             RpsEnum::CPFCNPJ_TAKER => $this->cpfCnpjTomador,
@@ -1110,5 +1111,14 @@ class Rps implements UserRequest
 
     public function getLocPrestacao(){
         return $this->cLocPrestacao;
+    }
+
+    public function setRetencaoPisCofins($retencaoPisCofins){
+        $this->retencaoPisCofins = $retencaoPisCofins;
+        return $this;
+    }
+    
+    public function getRetencaoPisCofins(){
+        return $this->retencaoPisCofins;
     }
 }
