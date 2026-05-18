@@ -57,16 +57,12 @@ class NfService
         // Check Output Type
         $outputClass = !empty($outputClass) ? $outputClass : $this->response;
         $params = General::convertUserRequest($params);
-
         //  File Without Signature
         $file = $builder->makeXmlRequest($information, $params);
-
+    
         //Set Input file and sign
         $information->setXml($file);
         
-       // dd($file);
-       // die;
-
         // Send to API,
         $output = ApiClient::send($this->nfEndPoint, $method, $information);
 

@@ -76,8 +76,7 @@ class NotaFiscalSP
     }
 
     public function enviarNota($params)
-    {
-        return $this->nfService->sendNf($this->baseInformation, $params);
+    {           return $this->nfService->sendNf($this->baseInformation, $params);
     }
 
     public function enviarLote($params)

@@ -37,11 +37,11 @@ class RpsEnum
     const CITY_INSTALLMENT = 'MunicipioPrestacao';
     const TOTAL_VALUE = 'ValorTotalRecebido';
     const ENCAPSULATION_NUMBER = 'NumeroEncapsulamento';
-    const RETENCAO_PIS_COFINS = "RetencaoPisCofins";
     
     // --- Layout 2 (Reforma Tributária 2026) - Campos adicionais do tpRPS
     const INITIAL_CHARGED_VALUE = 'ValorInicialCobrado';
     const FINAL_CHARGED_VALUE = 'ValorFinalCobrado';
+    const RETENCAO_PIS_COFINS = "RetencaoPisCofins";
     const FINE_VALUE = 'ValorMulta';
     const INTEREST_VALUE = 'ValorJuros';
     const IPI_VALUE = 'ValorIPI';
@@ -86,6 +86,7 @@ class RpsEnum
     public static function layout2SimpleTypes()
     {
         return [
+            RpsEnum::RETENCAO_PIS_COFINS,
             RpsEnum::INITIAL_CHARGED_VALUE,
             RpsEnum::FINAL_CHARGED_VALUE,
             RpsEnum::FINE_VALUE,
