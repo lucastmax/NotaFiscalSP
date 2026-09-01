@@ -65,6 +65,7 @@ class Rps implements UserRequest
     private $ncm;
     private $nbs;
     private $cLocPrestacao;
+    private $cPaisPrestacao;
 
     // Grupos (Layout 2)
     private $gpPrestacao = []; // ex.: ['cLocPrestacao' => '...', 'cPaisPrestacao' => '...']
@@ -167,6 +168,7 @@ class Rps implements UserRequest
             RpsEnum::NBS => $this->nbs,
             RpsEnum::ACTIVITY_EVENT => $this->atvEvento,
             RpsEnum::PRESTATION_LOCATION_CODE => $this->cLocPrestacao,
+            RpsEnum::PRESTATION_COUNTRY_CODE => $this->cPaisPrestacao,
             RpsEnum::TRIBUTES_GROUP => $this->trib,
             RpsEnum::IBS_CBS => $this->ibscbs,
             SimpleFieldsEnum::TYPE_ADDRESS => $this->tipoLogradouro,
@@ -1111,6 +1113,15 @@ class Rps implements UserRequest
 
     public function getLocPrestacao(){
         return $this->cLocPrestacao;
+    }
+
+    public function setPaisPrestacao($paisPrestacao){
+        $this->cPaisPrestacao = $paisPrestacao;
+        return $this;
+    }
+
+    public function getPaisPrestacao(){
+        return $this->cPaisPrestacao;
     }
 
     public function setRetencaoPisCofins($retencaoPisCofins){
