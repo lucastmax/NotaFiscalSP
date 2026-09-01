@@ -202,8 +202,12 @@ abstract class NfAbstract implements InputTransformer
                     }
                 }
 
+                //somente um valido
+
                 if(isset($extraInformations[RpsEnum::PRESTATION_LOCATION_CODE]) && $extraInformations[RpsEnum::PRESTATION_LOCATION_CODE] != null)
                     $rps[RpsEnum::PRESTATION_LOCATION_CODE] = $extraInformations[RpsEnum::PRESTATION_LOCATION_CODE];
+
+                
                 if(isset($extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE]) && $extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE] != null)
                     $rps[RpsEnum::PRESTATION_COUNTRY_CODE] = $extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE];
 
