@@ -203,7 +203,8 @@ abstract class NfAbstract implements InputTransformer
                 }
 
                 $rps[RpsEnum::PRESTATION_LOCATION_CODE] = $extraInformations[RpsEnum::PRESTATION_LOCATION_CODE];
-
+                $rps[RpsEnum::PRESTATION_COUNTRY_CODE] = $extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE];
+                
                 // grupos (nós) do layout 2 (arrays/objetos)
                 foreach (RpsEnum::complexTypes() as $group) {
                     if (isset($extraInformations[$group]) && !empty($extraInformations[$group])) {
