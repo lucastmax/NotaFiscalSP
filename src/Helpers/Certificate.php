@@ -140,14 +140,21 @@ class Certificate
         $cnpj = General::getKey($params, SimpleFieldsEnum::CNPJ_INTERMEDIARY);
 
         if ($cpf) {
-            return '1' . sprintf('%014s', $cpf);
+            return '1' . sprintf('%014s', $cpf) . self::rpsIntermediaryRetentionIndicator($params);
         }
 
         if ($cnpj) {
-            return '2' . sprintf('%014s', $cnpj);
+            return '2' . sprintf('%014s', $cnpj) . self::rpsIntermediaryRetentionIndicator($params);
         }
 
         return '';
+    }
+
+    private static function rpsIntermediaryRetentionIndicator($params)
+    {
+        return General::getKey($params, RpsEnum::ISS_RETENTION_INTERMEDIARY) === BooleanFields::LOWER_TRUE
+            ? BooleanFields::TRUE
+            : BooleanFields::FALSE;
     }
 
 
