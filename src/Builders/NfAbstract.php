@@ -159,6 +159,21 @@ abstract class NfAbstract implements InputTransformer
             if (isset($extraInformations[RpsEnum::EMAIL_TAKER]))
                 $rps[RpsEnum::EMAIL_TAKER] = $extraInformations[RpsEnum::EMAIL_TAKER];
 
+            $intermediary = $this->makeCPFCNPJIntermediary($extraInformations);
+            if ($intermediary !== null) {
+                $rps[RpsEnum::CPFCNPJ_INTERMEDIARY] = $intermediary;
+            }
+
+            foreach ([
+                RpsEnum::IM_INTERMEDIARY,
+                RpsEnum::ISS_RETENTION_INTERMEDIARY,
+                RpsEnum::EMAIL_INTERMEDIARY,
+            ] as $field) {
+                if (isset($extraInformations[$field])) {
+                    $rps[$field] = $extraInformations[$field];
+                }
+            }
+
             if (isset($extraInformations[RpsEnum::DISCRIMINATION]))
                 $rps[RpsEnum::DISCRIMINATION] = $extraInformations[RpsEnum::DISCRIMINATION];
 
@@ -202,12 +217,8 @@ abstract class NfAbstract implements InputTransformer
                     }
                 }
 
-                //somente um valido
-
                 if(isset($extraInformations[RpsEnum::PRESTATION_LOCATION_CODE]) && $extraInformations[RpsEnum::PRESTATION_LOCATION_CODE] != null)
                     $rps[RpsEnum::PRESTATION_LOCATION_CODE] = $extraInformations[RpsEnum::PRESTATION_LOCATION_CODE];
-
-                
                 if(isset($extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE]) && $extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE] != null)
                     $rps[RpsEnum::PRESTATION_COUNTRY_CODE] = $extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE];
 
@@ -234,6 +245,23 @@ abstract class NfAbstract implements InputTransformer
 
         if (isset($extraInformations[SimpleFieldsEnum::CNPJ]))
             return [SimpleFieldsEnum::CNPJ => $extraInformations[SimpleFieldsEnum::CNPJ]];
+
+        return null;
+    }
+
+    private function makeCPFCNPJIntermediary($extraInformations)
+    {
+        if (!empty($extraInformations[SimpleFieldsEnum::CPF_INTERMEDIARY])) {
+            return [
+                SimpleFieldsEnum::CPF => $extraInformations[SimpleFieldsEnum::CPF_INTERMEDIARY]
+            ];
+        }
+
+        if (!empty($extraInformations[SimpleFieldsEnum::CNPJ_INTERMEDIARY])) {
+            return [
+                SimpleFieldsEnum::CNPJ => $extraInformations[SimpleFieldsEnum::CNPJ_INTERMEDIARY]
+            ];
+        }
 
         return null;
     }

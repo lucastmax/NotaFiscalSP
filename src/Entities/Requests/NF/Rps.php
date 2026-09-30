@@ -111,7 +111,8 @@ class Rps implements UserRequest
      */
     public function setCnpjIntermediario($cnpjIntermediario)
     {
-        $this->cnpjIntermediario = $cnpjIntermediario;
+        $this->cnpjIntermediario = sprintf('%014s', General::onlyNumbers($cnpjIntermediario));
+        $this->cpfIntermediario = null;
     }
 
     public function toArray()
@@ -136,7 +137,8 @@ class Rps implements UserRequest
             RpsEnum::SERVICE_TAX => $this->aliquotaServicos,
             RpsEnum::ISS_RETENTION => $this->issRetido,
             RpsEnum::DISCRIMINATION => $this->discriminacao,
-            RpsEnum::CPFCNPJ_INTERMEDIARY => $this->cpfIntermediario,
+            SimpleFieldsEnum::CPF_INTERMEDIARY => $this->cpfIntermediario,
+            SimpleFieldsEnum::CNPJ_INTERMEDIARY => $this->cnpjIntermediario,
             RpsEnum::IM_INTERMEDIARY => $this->inscricaoMunicipalIntermediario,
             RpsEnum::ISS_RETENTION_INTERMEDIARY => $this->issRetidoIntermediario,
             RpsEnum::EMAIL_INTERMEDIARY => $this->emailIntermediario,
@@ -604,6 +606,7 @@ class Rps implements UserRequest
     public function setCpfIntermediario($cpfIntermediario)
     {
         $this->cpfIntermediario = sprintf('%011s', General::onlyNumbers($cpfIntermediario));
+        $this->cnpjIntermediario = null;
     }
 
     /**

@@ -86,7 +86,8 @@ class Certificate
             sprintf('%015s', str_replace(array('.', ','), '', number_format(General::getKey($params, RpsEnum::DEDUCTION_VALUE), 2))) .
             sprintf('%05s', General::getKey($params, RpsEnum::SERVICE_CODE)) .
             $tipoDoc .
-            sprintf('%014s', $document);
+            sprintf('%014s', $document) .
+            self::rpsIntermediarySignatureString($params);
             
         return $string;    
     
@@ -127,9 +128,26 @@ class Certificate
             sprintf('%015s', str_replace(array('.', ','), '', number_format(General::getKey($params, RpsEnum::DEDUCTION_VALUE), 2))) .
             sprintf('%05s', General::getKey($params, RpsEnum::SERVICE_CODE)) .
             $tipoDoc .
-            sprintf('%014s', $document);
+            sprintf('%014s', $document) .
+            self::rpsIntermediarySignatureString($params);
 
         return $string;
+    }
+
+    private static function rpsIntermediarySignatureString($params)
+    {
+        $cpf = General::getKey($params, SimpleFieldsEnum::CPF_INTERMEDIARY);
+        $cnpj = General::getKey($params, SimpleFieldsEnum::CNPJ_INTERMEDIARY);
+
+        if ($cpf) {
+            return '1' . sprintf('%014s', $cpf);
+        }
+
+        if ($cnpj) {
+            return '2' . sprintf('%014s', $cnpj);
+        }
+
+        return '';
     }
 
 

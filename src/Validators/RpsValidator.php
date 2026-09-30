@@ -49,6 +49,12 @@ class RpsValidator
                 $item[RpsEnum::ISS_RETENTION] = BooleanFields::LOWER_FALSE;
             }
 
+            if (isset($item[RpsEnum::ISS_RETENTION_INTERMEDIARY])) {
+                $item[RpsEnum::ISS_RETENTION_INTERMEDIARY] = $item[RpsEnum::ISS_RETENTION_INTERMEDIARY]
+                    ? BooleanFields::LOWER_TRUE
+                    : BooleanFields::LOWER_FALSE;
+            }
+
             $item[ComplexFieldsEnum::RPS_KEY] = true;
 
             // Layout 2 (Reforma Tributária): ajustar campos e assinatura
