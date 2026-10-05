@@ -46,6 +46,49 @@ class NotaFiscalSP
         return $this->nfService->getNf($this->baseInformation, $params);
     }
 
+    /**
+     * Download an issued NFS-e XML to a local file.
+     *
+     * @param mixed $params NFS-e number or query parameters accepted by consultarNf().
+     * @param string $filePath Destination path for the XML file.
+     * @return string Path to the saved XML file.
+     * @throws RuntimeException When the query fails or no NFS-e XML is returned.
+     */
+    public function baixarXmlNf($params, $filePath)
+    {
+        $response = $this->consultarNf($params);
+
+        if (!$response || $response->getSuccess() !== 'true') {
+            $message = $response && method_exists($response, 'getMessage')
+                ? $response->getMessage()
+                : 'Não foi possível consultar a NFS-e.';
+            throw new \RuntimeException($message ?: 'Não foi possível consultar a NFS-e.');
+        }
+
+        $xmlOutput = $response->getXmlOutput();
+        if (!is_string($xmlOutput) || trim($xmlOutput) === '') {
+            throw new \RuntimeException('A Prefeitura não retornou conteúdo XML para a NFS-e.');
+        }
+
+        $document = new \DOMDocument();
+        if (!$document->loadXML($xmlOutput, LIBXML_NONET)) {
+            throw new \RuntimeException('A resposta da Prefeitura não contém XML válido.');
+        }
+
+        $xpath = new \DOMXPath($document);
+        $invoice = $xpath->query('//*[local-name()="NFe"]')->item(0);
+        if (!$invoice) {
+            throw new \RuntimeException('A resposta não contém a NFS-e solicitada.');
+        }
+
+        $invoiceXml = $invoice->ownerDocument->saveXML($invoice);
+        if ($invoiceXml === false || file_put_contents($filePath, $invoiceXml) === false) {
+            throw new \RuntimeException('Não foi possível salvar o XML da NFS-e no caminho informado.');
+        }
+
+        return $filePath;
+    }
+
     public function informacaoLote($params = [])
     {
         return $this->nfService->lotInformation($this->baseInformation, $params);

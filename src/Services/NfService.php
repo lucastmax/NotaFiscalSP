@@ -59,7 +59,6 @@ class NfService
         $params = General::convertUserRequest($params);
         //  File Without Signature
         $file = $builder->makeXmlRequest($information, $params);
-    
         //Set Input file and sign
         $information->setXml($file);
         

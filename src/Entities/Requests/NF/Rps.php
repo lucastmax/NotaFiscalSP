@@ -170,7 +170,7 @@ class Rps implements UserRequest
             RpsEnum::NBS => $this->nbs,
             RpsEnum::ACTIVITY_EVENT => $this->atvEvento,
             RpsEnum::PRESTATION_LOCATION_CODE => $this->cLocPrestacao,
-            RpsEnum::PRESTATION_COUNTRY_CODE => $this->cPaisPrestacao,
+            'gpPrestacao' => $this->gpPrestacao,
             RpsEnum::TRIBUTES_GROUP => $this->trib,
             RpsEnum::IBS_CBS => $this->ibscbs,
             SimpleFieldsEnum::TYPE_ADDRESS => $this->tipoLogradouro,
@@ -1111,6 +1111,7 @@ class Rps implements UserRequest
 
     public function setLocPrestacao($locPrestacao){
         $this->cLocPrestacao = $locPrestacao;
+        $this->gpPrestacao = ['cLocPrestacao' => $locPrestacao];
         return $this;
     }
 
@@ -1120,6 +1121,9 @@ class Rps implements UserRequest
 
     public function setPaisPrestacao($paisPrestacao){
         $this->cPaisPrestacao = $paisPrestacao;
+        $this->gpPrestacao = $paisPrestacao !== null && $paisPrestacao !== ''
+            ? ['cPaisPrestacao' => $paisPrestacao]
+            : [];
         return $this;
     }
 

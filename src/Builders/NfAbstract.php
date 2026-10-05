@@ -217,10 +217,20 @@ abstract class NfAbstract implements InputTransformer
                     }
                 }
 
-                if(isset($extraInformations[RpsEnum::PRESTATION_LOCATION_CODE]) && $extraInformations[RpsEnum::PRESTATION_LOCATION_CODE] != null)
-                    $rps[RpsEnum::PRESTATION_LOCATION_CODE] = $extraInformations[RpsEnum::PRESTATION_LOCATION_CODE];
-                if(isset($extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE]) && $extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE] != null)
-                    $rps[RpsEnum::PRESTATION_COUNTRY_CODE] = $extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE];
+                $prestacao = isset($extraInformations['gpPrestacao']) && is_array($extraInformations['gpPrestacao'])
+                    ? $extraInformations['gpPrestacao']
+                    : [];
+                if (isset($extraInformations[RpsEnum::PRESTATION_LOCATION_CODE]) && $extraInformations[RpsEnum::PRESTATION_LOCATION_CODE] !== null && $extraInformations[RpsEnum::PRESTATION_LOCATION_CODE] !== '') {
+                    $prestacao = [RpsEnum::PRESTATION_LOCATION_CODE => $extraInformations[RpsEnum::PRESTATION_LOCATION_CODE]];
+                }
+                if (isset($extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE]) && $extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE] !== null && $extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE] !== '') {
+                    $prestacao = [RpsEnum::PRESTATION_COUNTRY_CODE => $extraInformations[RpsEnum::PRESTATION_COUNTRY_CODE]];
+                }
+                if (isset($prestacao[RpsEnum::PRESTATION_COUNTRY_CODE]) && $prestacao[RpsEnum::PRESTATION_COUNTRY_CODE] !== '') {
+                    $rps[RpsEnum::PRESTATION_COUNTRY_CODE] = $prestacao[RpsEnum::PRESTATION_COUNTRY_CODE];
+                } elseif (isset($prestacao[RpsEnum::PRESTATION_LOCATION_CODE]) && $prestacao[RpsEnum::PRESTATION_LOCATION_CODE] !== '') {
+                    $rps[RpsEnum::PRESTATION_LOCATION_CODE] = $prestacao[RpsEnum::PRESTATION_LOCATION_CODE];
+                }
 
                 // grupos (nós) do layout 2 (arrays/objetos)
                 foreach (RpsEnum::complexTypes() as $group) {
